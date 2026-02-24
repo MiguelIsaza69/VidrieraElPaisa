@@ -46,8 +46,8 @@ export default function Portfolio() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {projects.map((project, index) => (
-                    <div key={project.id} className={`group cursor-pointer ${index % 3 === 1 ? 'lg:mt-12' : ''}`}>
+                {projects.map((project) => (
+                    <div key={project.id} className="group cursor-pointer">
                         <div className="aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
                             <img src={project.publication_images?.[0]?.url || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

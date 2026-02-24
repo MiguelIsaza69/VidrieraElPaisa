@@ -51,10 +51,12 @@ export default function Services() {
                         <p className="text-gray-400 mb-8 max-w-md font-light text-sm">
                             Desde marquetería especializada hasta grandes fachadas comerciales.
                         </p>
-                        <Link href="#contacto"
+                        <a href="https://wa.me/573013700487"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="border-b border-white pb-1 hover:text-gray-300 hover:border-gray-300 transition-all">
                             Solicitar Asesoría &rarr;
-                        </Link>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,9 @@ const config: Config = {
         'paisa-light-gray': '#F5F5F5',
       },
       fontFamily: {
-        sans: ['var(--font-outfit)', 'sans-serif'],
+        sans: ['var(--font-geist)', 'sans-serif'],
+        rethink: ['var(--font-rethink)', 'sans-serif'],
+        geist: ['var(--font-geist)', 'sans-serif'],
       },
       animation: {
         'reveal-up': 'revealUp 0.8s ease-out forwards',

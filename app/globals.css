@@ -22,9 +22,34 @@ body {
 }
 
 /* For some reason some components might need these */
-.reveal-up {
-  opacity: 0;
-  animation: revealUp 0.8s ease-out forwards;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
 }
 
 @keyframes revealUp {
@@ -32,8 +57,24 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* sileo notification overrides */
+[data-sileo-toast],
+.sileo-toast {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0px !important;
+  font-family: var(--font-geist) !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-sileo-toast] [data-description] {
+  color: #64748b !important;
 }
