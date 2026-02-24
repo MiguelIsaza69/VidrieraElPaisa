@@ -34,7 +34,7 @@ export default function LoginPage() {
 
             if (data) {
                 const images = data
-                    .map(p => p.publication_images?.[0]?.url)
+                    .map((p: any) => p.publication_images?.[0]?.url)
                     .filter(Boolean);
                 setProjects(images);
             }
