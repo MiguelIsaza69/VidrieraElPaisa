@@ -12,33 +12,57 @@ export default function Testimonials() {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
-    const limit = 6;
+    const [limit, setLimit] = useState(6);
 
     const supabase = createClient();
 
+    // 1. Manejar el cambio de límite por tamaño de pantalla
     useEffect(() => {
-        fetchReviews();
-        fetchTotalCount();
-    }, [page]);
+        const updateLimit = () => {
+            const newLimit = window.innerWidth < 768 ? 3 : 6;
+            setLimit(newLimit);
+        };
+        updateLimit();
+        window.addEventListener('resize', updateLimit);
+        return () => window.removeEventListener('resize', updateLimit);
+    }, []);
 
-    const fetchTotalCount = async () => {
-        const { count } = await supabase
-            .from("reviews")
-            .select("*", { count: 'exact', head: true });
-        setTotalCount(count || 0);
-    };
+    // 2. Resetear página si el límite cambia
+    useEffect(() => {
+        setPage(0);
+    }, [limit]);
 
-    const fetchReviews = async () => {
-        const from = page * limit;
-        const to = from + limit - 1;
+    // 3. Carga de datos centralizada
+    useEffect(() => {
+        const loadData = async () => {
+            setLoading(true);
 
-        const { data } = await supabase
-            .from("reviews")
-            .select("*, profiles(full_name)")
-            .order("created_at", { ascending: false })
-            .range(from, to);
-        setReviews(data || []);
-    };
+            // Fetch Total Count
+            const { count } = await supabase
+                .from("reviews")
+                .select("*", { count: 'exact', head: true });
+            setTotalCount(count || 0);
+
+            // Fetch Reviews for current page
+            const from = page * limit;
+            const to = from + limit - 1;
+
+            const { data, error } = await supabase
+                .from("reviews")
+                .select("*, profiles(full_name)")
+                .order("created_at", { ascending: false })
+                .range(from, to);
+
+            if (error) {
+                console.error("Error fetching reviews:", error);
+            } else {
+                setReviews(data || []);
+            }
+            setLoading(false);
+        };
+
+        loadData();
+    }, [page, limit]);
 
     const totalPages = Math.ceil(totalCount / limit);
 
@@ -53,14 +77,14 @@ export default function Testimonials() {
             return;
         }
 
-        // Check review limit
-        const { count, error: countError } = await supabase
+        // Check review limit (prevents spam)
+        const { count } = await supabase
             .from("reviews")
             .select("*", { count: 'exact', head: true })
             .eq("user_id", user.id);
 
         if (count !== null && count >= 50) {
-            sileo.error({ description: "Límite alcanzado: máximo 2 opiniones por usuario." });
+            sileo.error({ description: "Límite alcanzado para testimonios." });
             setLoading(false);
             return;
         }
@@ -74,9 +98,17 @@ export default function Testimonials() {
         } else {
             sileo.success({ description: "¡Gracias por tu opinión!" });
             setContent("");
+            // Al cambiar el estado de la página a 0, el useEffect de carga se activará solo
             setPage(0);
-            fetchReviews();
-            fetchTotalCount();
+            // Si ya estábamos en la página 0, forzamos un refresh manual o dejamos que el useEffect lo haga si dependiera de algo más
+            // Para asegurar el refresco si ya estábamos en 0:
+            if (page === 0) {
+                // Re-ejecutamos la lógica de carga (podríamos extraer loadData a un useCallback si fuera necesario)
+                const { count: newCount } = await supabase.from("reviews").select("*", { count: 'exact', head: true });
+                setTotalCount(newCount || 0);
+                const { data } = await supabase.from("reviews").select("*, profiles(full_name)").order("created_at", { ascending: false }).range(0, limit - 1);
+                setReviews(data || []);
+            }
         }
         setLoading(false);
     };

@@ -30,7 +30,6 @@ export default function Footer() {
                         <h4 className="font-bold text-sm uppercase tracking-wider mb-6">Social</h4>
                         <ul className="space-y-4 text-sm text-gray-600 font-light">
                             <li><a href="https://instagram.com/vidrieraelpaisa" target="_blank" rel="noopener noreferrer" className="hover:text-black">Instagram</a></li>
-                            <li><Link href="#" className="hover:text-black">Facebook</Link></li>
                             <li><a href="https://wa.me/573013700487" target="_blank" rel="noopener noreferrer" className="hover:text-black">WhatsApp</a></li>
                         </ul>
                     </div>

@@ -54,7 +54,7 @@ export default function Hero() {
     const slide = slides[current];
 
     return (
-        <section id="inicio" className="relative min-h-[85vh] lg:min-h-screen flex items-center overflow-hidden">
+        <section id="inicio" className="relative min-h-[85vh] lg:min-h-screen flex items-center overflow-hidden pt-32 lg:pt-0">
             <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
 
                 {/* Text Content */}
@@ -72,6 +72,19 @@ export default function Hero() {
                     </p>
                     <div className="flex gap-4">
                         <Link href="#servicios"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const element = document.getElementById('servicios');
+                                if (element) {
+                                    const navHeight = 80;
+                                    const elementPosition = element.getBoundingClientRect().top;
+                                    const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+                                    window.scrollTo({
+                                        top: offsetPosition,
+                                        behavior: "smooth"
+                                    });
+                                }
+                            }}
                             className="bg-black text-white px-10 py-5 text-xs font-black uppercase tracking-[0.4em] hover:bg-neutral-800 transition-all shadow-2xl flex items-center gap-3 group">
                             Explorar Servicios
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
@@ -92,11 +105,14 @@ export default function Hero() {
 
                     {/* Slogan Card */}
                     {slide.slogan && (
-                        <div className="absolute -bottom-12 -left-12 bg-white p-10 shadow-2xl max-w-xs hidden lg:block">
-                            <p className="font-rethink font-bold text-xl text-black leading-tight">
+                        <div
+                            className="absolute -bottom-6 -left-6 lg:-bottom-12 lg:-left-12 p-6 lg:p-10 shadow-2xl max-w-[240px] lg:max-w-xs z-20 border border-black/5"
+                            style={{ backgroundColor: '#FCF9EB' }}
+                        >
+                            <p className="font-rethink font-bold text-base lg:text-xl text-black leading-tight">
                                 "{slide.slogan}"
                             </p>
-                            <div className="w-12 h-1 bg-gray-100 mt-6"></div>
+                            <div className="w-12 h-1 bg-gray-100 mt-4 lg:mt-6"></div>
                         </div>
                     )}
 
