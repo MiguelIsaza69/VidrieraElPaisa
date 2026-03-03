@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { sileo } from "sileo";
-import { Plus, Trash2, Edit3, Image as ImageIcon, LayoutDashboard, Send, Star } from "lucide-react";
+import { Plus, Trash2, Edit3, Image as ImageIcon, LayoutDashboard, Send, Star, Search } from "lucide-react";
 
 type Tab = "publications" | "hero" | "reviews";
 
@@ -12,14 +12,18 @@ export default function AdminDashboard() {
     const [publications, setPublications] = useState<any[]>([]);
     const [heroSlides, setHeroSlides] = useState<any[]>([]);
     const [reviews, setReviews] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState<any>(null);
+    const [showReloadButton, setShowReloadButton] = useState(false);
 
     // Form states
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("Ventanería");
+    const [category, setCategory] = useState("Proyectos"); // Etiqueta interna
+    const [service_category_id, setServiceCategoryId] = useState(""); // Nuevo: ID de la tabla service_categories
     const [slogan, setSlogan] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imageUrlInput, setImageUrlInput] = useState(""); // Nuevo estado para URL manual
@@ -31,18 +35,40 @@ export default function AdminDashboard() {
         fetchData();
     }, [activeTab]);
 
+    // Temporizador para mostrar botón de recarga si tarda demasiado
+    useEffect(() => {
+        let timer: any;
+        if (loading) {
+            timer = setTimeout(() => {
+                setShowReloadButton(true);
+            }, 7000); // 7 segundos de espera
+        } else {
+            setShowReloadButton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
+
     const fetchData = async () => {
         setLoading(true);
         console.log(`Cargando datos para pestaña: ${activeTab}...`);
 
         try {
             if (activeTab === "publications") {
-                const { data, error } = await supabase
+                const { data: pubData, error: pubError } = await supabase
                     .from("publications")
-                    .select("*, publication_images(*)")
+                    .select("*, publication_images(*), service_categories(name)")
                     .order("created_at", { ascending: false });
-                if (error) throw error;
-                setPublications(data || []);
+                if (pubError) throw pubError;
+                setPublications(pubData || []);
+
+                const { data: catData, error: catError } = await supabase
+                    .from("service_categories")
+                    .select("*");
+                if (catError) throw catError;
+                setCategories(catData || []);
+                if (catData && catData.length > 0 && !service_category_id) {
+                    setServiceCategoryId(catData[0].id);
+                }
             } else if (activeTab === "hero") {
                 const { data, error } = await supabase
                     .from("hero_slides")
@@ -137,13 +163,22 @@ export default function AdminDashboard() {
 
             if (activeTab === "publications") {
                 console.log("Enviando datos a tabla 'publications'...");
-                const pubData: any = { title, description, category };
+                const pubData: any = {
+                    title,
+                    description,
+                    category,
+                    service_category_id: service_category_id || null
+                };
                 let error;
                 let pubId = editingItem?.id;
 
                 if (editingItem) {
                     const res = await supabase.from("publications").update(pubData).eq("id", editingItem.id);
                     error = res.error;
+                    if (!error && finalImageUrl) {
+                        // Limpiar imagen anterior y poner la nueva
+                        await supabase.from("publication_images").delete().eq("publication_id", pubId);
+                    }
                 } else {
                     const res = await supabase.from("publications").insert([pubData]).select();
                     error = res.error;
@@ -215,7 +250,8 @@ export default function AdminDashboard() {
     const resetForm = () => {
         setTitle("");
         setDescription("");
-        setCategory("Ventanería");
+        setCategory("Proyectos");
+        setServiceCategoryId(categories[0]?.id || "");
         setSlogan("");
         setImageFile(null);
         setImageUrlInput("");
@@ -228,6 +264,8 @@ export default function AdminDashboard() {
         setDescription(item.description);
         if (activeTab === "publications") {
             setCategory(item.category);
+            setServiceCategoryId(item.service_category_id || "");
+            setImageUrlInput(item.publication_images?.[0]?.url || "");
         } else {
             setSlogan(item.slogan || "");
             setImageUrlInput(item.image_url || "");
@@ -281,19 +319,46 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
+                {activeTab === "publications" && (
+                    <div className="mb-12 relative max-w-2xl">
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Buscar publicaciones por título o descripción..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-white border-2 border-transparent focus:border-black p-6 pl-16 text-sm font-medium outline-none transition-all shadow-sm hover:shadow-md"
+                        />
+                    </div>
+                )}
+
                 {loading ? (
-                    <div className="flex items-center justify-center py-32">
+                    <div className="flex flex-col items-center justify-center py-32 gap-6">
                         <div className="w-8 h-8 border-4 border-black border-t-transparent animate-spin"></div>
+                        <p className="text-xs font-black uppercase tracking-widest text-gray-400">Cargando datos...</p>
+                        {showReloadButton && (
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="mt-4 px-8 py-3 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                            >
+                                ¡Parece que tarda un poco! ¿Quieres recargar el panel?
+                            </button>
+                        )}
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {activeTab === "publications" && (
-                            publications.length > 0 ? (
-                                publications.map((pub) => (
+                        {activeTab === "publications" && (() => {
+                            const filtered = publications.filter(pub =>
+                                pub.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                pub.description.toLowerCase().includes(searchQuery.toLowerCase())
+                            );
+
+                            return filtered.length > 0 ? (
+                                filtered.map((pub) => (
                                     <ItemCard
                                         key={pub.id}
                                         title={pub.title}
-                                        subtitle={pub.category}
+                                        subtitle={`${pub.service_categories?.name || 'Sin Categoría'} | ${pub.category}`}
                                         desc={pub.description}
                                         img={pub.publication_images?.[0]?.url}
                                         onEdit={() => openEdit(pub)}
@@ -301,9 +366,9 @@ export default function AdminDashboard() {
                                     />
                                 ))
                             ) : (
-                                <EmptyState message="No hay publicaciones en el catálogo" />
-                            )
-                        )}
+                                <EmptyState message={searchQuery ? "No se encontraron resultados para tu búsqueda" : "No hay publicaciones en el catálogo"} />
+                            );
+                        })()}
 
                         {activeTab === "hero" && (
                             heroSlides.length > 0 ? (
@@ -389,20 +454,30 @@ export default function AdminDashboard() {
                                 </div>
 
                                 {activeTab === "publications" ? (
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Categoría</label>
-                                        <select
-                                            value={category}
-                                            onChange={(e) => setCategory(e.target.value)}
-                                            className="w-full bg-gray-50 border-0 p-4 text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all"
-                                        >
-                                            <option>Ventanería</option>
-                                            <option>Pasamanos</option>
-                                            <option>Cabinas de Baño</option>
-                                            <option>Espejos</option>
-                                            <option>Fachadas</option>
-                                        </select>
-                                    </div>
+                                    <>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Servicio Principal</label>
+                                            <select
+                                                value={service_category_id}
+                                                onChange={(e) => setServiceCategoryId(e.target.value)}
+                                                className="w-full bg-gray-50 border-0 p-4 text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all"
+                                            >
+                                                {categories.map((cat) => (
+                                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Etiqueta/Categoría</label>
+                                            <input
+                                                type="text"
+                                                value={category}
+                                                onChange={(e) => setCategory(e.target.value)}
+                                                className="w-full bg-gray-50 border-0 p-4 text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all"
+                                                placeholder="Ej: Nuevo Proyecto, Residencial..."
+                                            />
+                                        </div>
+                                    </>
                                 ) : (
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Slogan</label>

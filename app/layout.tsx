@@ -14,8 +14,11 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-    title: "Vidriera El Paisa - Moderno",
+    title: "Vidriera Elpaisa",
     description: "Soluciones arquitectónicas en vidrio y aluminio para quienes valoran la luz, la estética y la funcionalidad moderna.",
+    icons: {
+        icon: "https://res.cloudinary.com/dbeaem1xr/image/upload/v1772562861/Gemini_Generated_Image_2qmr892qmr892qmr_loonwj.png",
+    },
 };
 
 import { Toaster } from "sileo";

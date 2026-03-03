@@ -9,6 +9,7 @@ export default function Hero() {
     const [slides, setSlides] = useState<any[]>([]);
     const [current, setCurrent] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [showReloadButton, setShowReloadButton] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
@@ -34,6 +35,19 @@ export default function Hero() {
         fetchSlides();
     }, []);
 
+    // Temporizador para mostrar botón de recarga si tarda demasiado
+    useEffect(() => {
+        let timer: any;
+        if (loading) {
+            timer = setTimeout(() => {
+                setShowReloadButton(true);
+            }, 7000); // 7 segundos de espera
+        } else {
+            setShowReloadButton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [loading]);
+
     useEffect(() => {
         // Solo iniciamos el timer si hay más de un slide
         if (slides.length <= 1) return;
@@ -46,8 +60,17 @@ export default function Hero() {
     }, [slides.length, current]); // Se reinicia el timer cada vez que cambia el slide (manual o auto)
 
     if (loading) return (
-        <div className="h-[70vh] flex items-center justify-center">
-            <div className="w-10 h-1 border-t-2 border-black animate-pulse"></div>
+        <div className="h-[70vh] flex flex-col items-center justify-center gap-6">
+            <div className="w-10 h-1 bg-black animate-pulse"></div>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Iniciando Experiencia...</p>
+            {showReloadButton && (
+                <button
+                    onClick={() => window.location.reload()}
+                    className="mt-4 px-8 py-3 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                >
+                    La carga demora un poco. ¿Recargar página?
+                </button>
+            )}
         </div>
     );
 

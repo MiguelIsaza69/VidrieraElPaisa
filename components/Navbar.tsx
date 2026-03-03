@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef, useMemo } from "react";
+import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { LogOut, User as UserIcon, ChevronDown, LayoutDashboard, Menu, X } from "lucide-react";
@@ -134,8 +135,14 @@ export default function Navbar() {
                                     window.scrollTo({ top: 0, behavior: 'smooth' });
                                 }
                             }}
-                            className="text-2xl md:text-3xl font-rethink font-bold tracking-tight shrink-0 whitespace-nowrap">
-                            VIDRIERA<span className="text-gray-400 font-light ml-1">EL PAISA</span>
+                            className="relative h-14 w-52 flex items-center">
+                            <Image
+                                src="https://res.cloudinary.com/dbeaem1xr/image/upload/v1772563832/Gemini_Generated_Image_7ofe8s7ofe8s7ofe-removebg-preview_aluzsi_a_90_a_hflip_a_vflip_opmzpa.png"
+                                alt="Vidriera Elpaisa"
+                                fill
+                                className="object-contain transition-all duration-300 brightness-0"
+                                priority
+                            />
                         </Link>
 
                         <div className="hidden min-[1257px]:flex space-x-12">
@@ -145,9 +152,9 @@ export default function Navbar() {
                             <Link href="/"
                                 onClick={(e) => scrollToSection(e, 'servicios')}
                                 className="text-sm font-extrabold uppercase tracking-widest hover:text-gray-500 transition-colors">Servicios</Link>
-                            <Link href="/"
-                                onClick={(e) => scrollToSection(e, 'portafolio')}
-                                className="text-sm font-extrabold uppercase tracking-widest hover:text-gray-500 transition-colors">Portafolio</Link>
+
+                            <Link href="/catalogo"
+                                className="text-sm font-extrabold uppercase tracking-widest hover:text-gray-500 transition-colors">Catálogo</Link>
                             <Link href="/contacto"
                                 className="text-sm font-extrabold uppercase tracking-widest hover:text-gray-500 transition-colors">Contacto</Link>
                         </div>
@@ -213,7 +220,7 @@ export default function Navbar() {
                                         Entrar
                                     </Link>
                                 )}
-                                <a href="https://wa.me/573013700487"
+                                <a href={`https://wa.me/573013700487?text=${encodeURIComponent('Hola, estoy interesado en sus productos y necesito una asesoria')}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center justify-center px-8 py-3 bg-black text-white text-xs font-black uppercase tracking-widest hover:bg-neutral-800 transition-all duration-300 shadow-lg">
@@ -244,8 +251,13 @@ export default function Navbar() {
             <div className={`fixed inset-y-0 right-0 z-[100] bg-white w-full sm:w-[500px] transition-all duration-500 ease-in-out shadow-[0_0_100px_rgba(0,0,0,0.1)] ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="p-8 h-full flex flex-col">
                     <div className="flex justify-between items-center mb-20">
-                        <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-2xl font-rethink font-bold tracking-tight">
-                            VIDRIERA<span className="text-gray-400 font-light ml-1">EL PAISA</span>
+                        <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="relative h-12 w-44 flex items-center">
+                            <Image
+                                src="https://res.cloudinary.com/dbeaem1xr/image/upload/v1772563832/Gemini_Generated_Image_7ofe8s7ofe8s7ofe-removebg-preview_aluzsi_a_90_a_hflip_a_vflip_opmzpa.png"
+                                alt="Vidriera Elpaisa"
+                                fill
+                                className="object-contain brightness-0"
+                            />
                         </Link>
                         <button onClick={() => setIsMobileMenuOpen(false)} className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                             <X className="w-8 h-8 text-black" />
@@ -255,7 +267,8 @@ export default function Navbar() {
                     <div className="flex flex-col gap-10">
                         <Link href="/" onClick={(e) => scrollToSection(e, 'inicio')} className="text-4xl font-rethink font-bold tracking-tighter hover:text-gray-400 transition-colors">Inicio</Link>
                         <Link href="/" onClick={(e) => scrollToSection(e, 'servicios')} className="text-4xl font-rethink font-bold tracking-tighter hover:text-gray-400 transition-colors">Servicios</Link>
-                        <Link href="/" onClick={(e) => scrollToSection(e, 'portafolio')} className="text-4xl font-rethink font-bold tracking-tighter hover:text-gray-400 transition-colors">Portafolio</Link>
+
+                        <Link href="/catalogo" onClick={() => setIsMobileMenuOpen(false)} className="text-4xl font-rethink font-bold tracking-tighter hover:text-gray-400 transition-colors">Catálogo</Link>
                         <Link href="/contacto" onClick={() => setIsMobileMenuOpen(false)} className="text-4xl font-rethink font-bold tracking-tighter hover:text-gray-400 transition-colors">Contacto</Link>
 
                         <div className="mt-auto border-t border-gray-100 pt-10 pb-4">
@@ -271,7 +284,7 @@ export default function Navbar() {
                                     <button onClick={handleLogout} className="text-lg font-bold text-red-400">Cerrar Sesión</button>
                                 </div>
                             )}
-                            <a href="https://wa.me/573013700487" target="_blank" rel="noopener noreferrer" className="block w-full bg-black text-white text-center py-6 text-sm font-black uppercase tracking-[0.3em]">
+                            <a href={`https://wa.me/573013700487?text=${encodeURIComponent('Hola, estoy interesado en sus productos y necesito una asesoria')}`} target="_blank" rel="noopener noreferrer" className="block w-full bg-black text-white text-center py-6 text-sm font-black uppercase tracking-[0.3em]">
                                 Cotizar por WhatsApp
                             </a>
                         </div>
