@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Vidriera Elpaisa",
     description: "Soluciones arquitectónicas en vidrio y aluminio para quienes valoran la luz, la estética y la funcionalidad moderna.",
     icons: {
-        icon: "https://res.cloudinary.com/dbeaem1xr/image/upload/v1772562861/Gemini_Generated_Image_2qmr892qmr892qmr_loonwj.png",
+        icon: "https://res.cloudinary.com/dbeaem1xr/image/upload/v1773157673/Gemini_Generated_Image_ns4ugwns4ugwns4u-removebg-preview_x2q8to.png",
     },
 };
 

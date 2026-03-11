@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
     return (
@@ -8,7 +9,14 @@ export default function Footer() {
             <div className="max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                     <div className="col-span-1 md:col-span-2">
-                        <h3 className="text-2xl font-bold tracking-tight mb-6">VIDRIERA EL PAISA</h3>
+                        <Link href="/" className="relative h-14 w-52 flex items-center mb-6">
+                            <Image
+                                src="https://res.cloudinary.com/dbeaem1xr/image/upload/v1772563832/Gemini_Generated_Image_7ofe8s7ofe8s7ofe-removebg-preview_aluzsi_a_90_a_hflip_a_vflip_opmzpa.png"
+                                alt="Vidriera Elpaisa"
+                                fill
+                                className="object-contain brightness-0"
+                            />
+                        </Link>
                         <p className="text-gray-500 font-light max-w-xs mb-8">
                             Innovación y transparencia en cada proyecto. Su aliado experto en vidrio y aluminio en el área
                             metropolitana.
