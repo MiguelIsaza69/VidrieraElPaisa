@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { MessageCircle, Instagram, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
 
 export default function Contacto() {
@@ -11,11 +12,15 @@ export default function Contacto() {
             <div className="pt-32 pb-20 px-6 lg:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                     {/* Contenido Izquierda */}
-                    <div className="animate-reveal-up">
-                        <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-400 mb-6 block">Estamos para ayudarte</span>
-                        <h1 className="text-6xl md:text-8xl font-rethink font-bold text-black tracking-tighter mb-8 leading-none">
-                            Vidriera <br /> <span className="text-gray-300">El Paisa</span>
-                        </h1>
+                    <div className="animate-reveal-up flex flex-col items-start">
+                        <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-400 mb-8 block">Estamos para ayudarte</span>
+                        <div className="relative w-full max-w-sm h-32 md:h-48 mb-12">
+                            <img
+                                src="https://res.cloudinary.com/dbeaem1xr/image/upload/v1772563832/Gemini_Generated_Image_7ofe8s7ofe8s7ofe-removebg-preview_aluzsi_a_90_a_hflip_a_vflip_opmzpa.png"
+                                alt="Vidriera Elpaisa Logo"
+                                className="w-full h-full object-contain brightness-0"
+                            />
+                        </div>
                         <p className="text-xl text-gray-500 font-medium max-w-md mb-12 leading-relaxed">
                             Transformamos tus espacios con la elegancia del vidrio y la resistencia del aluminio. Contáctanos para una asesoría personalizada.
                         </p>
@@ -60,38 +65,38 @@ export default function Contacto() {
                     </div>
 
                     {/* Información Derecha */}
-                    <div className="bg-gray-50 p-12 lg:p-20 relative overflow-hidden animate-reveal-up" style={{ animationDelay: '0.2s' }}>
+                    <div className="bg-gray-50 p-8 md:p-12 lg:p-20 relative overflow-hidden animate-reveal-up" style={{ animationDelay: '0.2s' }}>
                         <div className="relative z-10">
-                            <h3 className="text-2xl font-bold mb-12">Información Directa</h3>
+                            <h3 className="text-2xl font-bold mb-8 md:mb-12">Información Directa</h3>
 
-                            <div className="space-y-10">
-                                <div className="flex gap-6">
-                                    <div className="w-12 h-12 bg-white flex items-center justify-center shadow-sm">
-                                        <Phone className="w-5 h-5 text-gray-400" />
+                            <div className="space-y-8 md:space-y-10">
+                                <div className="flex gap-4 md:gap-6">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-white flex items-center justify-center shadow-sm shrink-0">
+                                        <Phone className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Teléfono</p>
-                                        <p className="text-lg font-bold">+57 301 3700487</p>
+                                        <p className="text-base md:text-lg font-bold">+57 301 3700487</p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6">
-                                    <div className="w-12 h-12 bg-white flex items-center justify-center shadow-sm">
-                                        <MapPin className="w-5 h-5 text-gray-400" />
+                                <div className="flex gap-4 md:gap-6">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-white flex items-center justify-center shadow-sm shrink-0">
+                                        <MapPin className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Ubicación</p>
-                                        <p className="text-lg font-bold">Medellín, Antioquia</p>
+                                        <p className="text-base md:text-lg font-bold">Medellín, Antioquia</p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6">
-                                    <div className="w-12 h-12 bg-white flex items-center justify-center shadow-sm">
-                                        <Mail className="w-5 h-5 text-gray-400" />
+                                <div className="flex gap-4 md:gap-6">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-white flex items-center justify-center shadow-sm shrink-0">
+                                        <Mail className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                                     </div>
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Email</p>
-                                        <p className="text-lg font-bold">vidrieraelpaisa33@hotmail.com</p>
+                                        <p className="text-base md:text-lg font-bold break-all sm:break-normal">vidrieraelpaisa33@hotmail.com</p>
                                     </div>
                                 </div>
                             </div>
@@ -102,6 +107,7 @@ export default function Contacto() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </main>
     );
 }

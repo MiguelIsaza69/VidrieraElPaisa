@@ -78,3 +78,12 @@ body {
 [data-sileo-toast] [data-description] {
   color: #64748b !important;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

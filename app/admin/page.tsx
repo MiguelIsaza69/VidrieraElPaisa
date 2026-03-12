@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { sileo } from "sileo";
-import { Plus, Trash2, Edit3, Image as ImageIcon, LayoutDashboard, Send, Star, Search } from "lucide-react";
+import { Plus, Trash2, Edit3, Image as ImageIcon, LayoutDashboard, Send, Star, Search, RefreshCw } from "lucide-react";
+import ReloadButton from "@/components/ReloadButton";
 
 type Tab = "publications" | "hero" | "reviews";
 
@@ -276,46 +277,51 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen bg-[#fafafa] p-8 md:p-12 pt-0 md:pt-0 font-geist">
             <div className="max-w-7xl mx-auto">
-                <div className="sticky top-0 z-40 bg-[#fafafa]/90 backdrop-blur-md pt-10 md:pt-14 pb-10 mb-12 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-gray-100 -mx-4 px-4 md:-mx-8 md:px-8">
-                    {/* Lado Izquierdo: Título */}
-                    <div className="flex-1 hidden md:block">
-                        <h1 className="text-4xl font-rethink font-bold text-black tracking-tighter leading-none">Administración</h1>
-                        <p className="text-gray-500 font-medium text-xs uppercase tracking-[0.2em] mt-3">Panel de Control</p>
+                <div className="sticky top-0 z-40 bg-[#fafafa]/90 backdrop-blur-md pt-6 md:pt-14 pb-6 md:pb-10 mb-8 md:mb-12 flex flex-col items-stretch gap-6 md:gap-8 border-b border-gray-100 -mx-4 px-4 md:-mx-8 md:px-8">
+                    {/* Fila Superior: Título y Acciones */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                        <div className="flex-1">
+                            <h1 className="text-3xl md:text-4xl font-rethink font-bold text-black tracking-tighter leading-none">Administración</h1>
+                            <p className="text-gray-500 font-medium text-[10px] md:text-xs uppercase tracking-[0.2em] mt-2 md:mt-3">Panel de Control</p>
+                        </div>
+
+                        {/* Acciones */}
+                        <div className="flex flex-col xs:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                            <ReloadButton variant="full" className="!px-5 !py-4 md:!py-5 bg-white !text-black border border-gray-200" />
+                            {activeTab !== "reviews" && (
+                                <button
+                                    onClick={() => { resetForm(); setShowModal(true); }}
+                                    className="bg-black text-white px-5 md:px-10 py-4 md:py-5 text-[10px] md:text-xs font-black uppercase tracking-[0.25em] flex items-center justify-center gap-3 md:gap-4 hover:bg-neutral-800 transition-all shadow-xl md:shadow-2xl"
+                                >
+                                    <Plus className="w-4 h-4 shrink-0" />
+                                    <span>{activeTab === 'publications' ? 'Nueva' : 'Nuevo Slide'}</span>
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Centro: Tabs */}
-                    <div className="flex bg-gray-200/50 p-1.5 rounded-none h-fit">
-                        <button
-                            onClick={() => setActiveTab("publications")}
-                            className={`px-8 py-3 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'publications' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-black'}`}
-                        >
-                            Catálogo
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("hero")}
-                            className={`px-8 py-3 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'hero' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-black'}`}
-                        >
-                            Hero Carousel
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("reviews")}
-                            className={`px-8 py-3 text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'reviews' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-black'}`}
-                        >
-                            Opiniones
-                        </button>
-                    </div>
-
-                    {/* Lado Derecho: Acción */}
-                    <div className="flex-1 flex justify-end">
-                        {activeTab !== "reviews" && (
+                    {/* Fila Inferior: Tabs con Scroll Horizontal */}
+                    <div className="flex justify-start sm:justify-start">
+                        <div className="flex bg-gray-100 p-1.5 rounded-none overflow-x-auto no-scrollbar max-w-full">
                             <button
-                                onClick={() => { resetForm(); setShowModal(true); }}
-                                className="bg-black text-white min-w-[260px] px-10 py-5 text-xs font-black uppercase tracking-[0.25em] flex items-center justify-center gap-4 hover:bg-neutral-800 transition-all shadow-2xl"
+                                onClick={() => setActiveTab("publications")}
+                                className={`px-6 md:px-12 py-3 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'publications' ? 'bg-white text-black shadow-md' : 'text-gray-500 hover:text-black hover:bg-gray-50'}`}
                             >
-                                <Plus className="w-4 h-4 shrink-0" />
-                                <span>{activeTab === 'publications' ? 'Nueva Publicación' : 'Nuevo Slide'}</span>
+                                Catálogo
                             </button>
-                        )}
+                            <button
+                                onClick={() => setActiveTab("hero")}
+                                className={`px-6 md:px-12 py-3 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'hero' ? 'bg-white text-black shadow-md' : 'text-gray-500 hover:text-black hover:bg-gray-50'}`}
+                            >
+                                Hero
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("reviews")}
+                                className={`px-6 md:px-12 py-3 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'reviews' ? 'bg-white text-black shadow-md' : 'text-gray-500 hover:text-black hover:bg-gray-50'}`}
+                            >
+                                Opiniones
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -535,18 +541,18 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 pt-6">
+                            <div className="flex flex-col sm:flex-row gap-4 pt-6">
                                 <button
                                     type="submit"
                                     disabled={uploading}
-                                    className="flex-grow bg-black text-white py-5 text-xs font-black uppercase tracking-[0.4em] hover:bg-neutral-800 transition-all shadow-xl disabled:opacity-50"
+                                    className="flex-grow bg-black text-white py-4 md:py-5 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.4em] hover:bg-neutral-800 transition-all shadow-xl disabled:opacity-50 order-1 sm:order-none"
                                 >
                                     {uploading ? 'Guardando...' : 'Confirmar Cambios'}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-10 border-2 border-black text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-colors"
+                                    className="px-8 sm:px-10 py-4 md:py-5 border-2 border-black text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-colors order-2 sm:order-none"
                                 >
                                     Cancelar
                                 </button>

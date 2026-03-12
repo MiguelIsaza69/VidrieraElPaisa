@@ -5,8 +5,9 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { LogOut, User as UserIcon, ChevronDown, LayoutDashboard, Menu, X } from "lucide-react";
+import { LogOut, User as UserIcon, ChevronDown, LayoutDashboard, Menu, X, RefreshCw } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import ReloadButton from "./ReloadButton";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
@@ -160,7 +161,8 @@ export default function Navbar() {
                         </div>
 
                         <div className="flex items-center gap-4 text-sm font-extrabold uppercase tracking-widest">
-                            <div className="hidden min-[1257px]:flex items-center gap-4">
+                            <div className="hidden min-[1257px]:flex items-center gap-6">
+                                <ReloadButton />
                                 {user && role === 'admin' && (
                                     <Link
                                         href="/admin"
@@ -259,9 +261,12 @@ export default function Navbar() {
                                 className="object-contain brightness-0"
                             />
                         </Link>
-                        <button onClick={() => setIsMobileMenuOpen(false)} className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                            <X className="w-8 h-8 text-black" />
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <ReloadButton showText className="bg-gray-50 px-4 py-3" />
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <X className="w-8 h-8 text-black" />
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex flex-col gap-10">
