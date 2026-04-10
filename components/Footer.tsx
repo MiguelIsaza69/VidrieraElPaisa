@@ -29,8 +29,8 @@ export default function Footer() {
                             <li><span className="block font-medium text-black">Vidriera El Paisa</span></li>
                             <li>Tel: +57 301 3700487</li>
                             <li>Medellín, Antioquia</li>
-                            <li><a href="mailto:vidrieraelpaisa33@hotmail.com"
-                                className="underline hover:text-black">vidrieraelpaisa33@hotmail.com</a></li>
+                            <li><a href="mailto:vidrieraelpaisa@gmail.com"
+                                className="underline hover:text-black">vidrieraelpaisa@gmail.com</a></li>
                         </ul>
                     </div>
 

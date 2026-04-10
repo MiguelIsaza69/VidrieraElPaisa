@@ -96,7 +96,7 @@ export default function Contacto() {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Email</p>
-                                        <p className="text-base md:text-lg font-bold break-all sm:break-normal">vidrieraelpaisa33@hotmail.com</p>
+                                        <p className="text-base md:text-lg font-bold break-all sm:break-normal">vidrieraelpaisa@gmail.com</p>
                                     </div>
                                 </div>
                             </div>
