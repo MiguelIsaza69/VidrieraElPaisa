@@ -131,10 +131,36 @@ export default function AdminDashboard() {
         }
     };
 
+    const isAllowedImageUrl = (raw: string): boolean => {
+        try {
+            const u = new URL(raw);
+            if (u.protocol !== "https:") return false;
+            const allowed = ["res.cloudinary.com"];
+            try {
+                if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+                    allowed.push(new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname);
+                }
+            } catch { }
+            return allowed.some(
+                (host) => u.hostname === host || u.hostname.endsWith(`.${host}`)
+            );
+        } catch {
+            return false;
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setUploading(true);
         console.log("--- Iniciando proceso de guardado ---");
+
+        if (imageUrlInput && !isAllowedImageUrl(imageUrlInput)) {
+            sileo.error({
+                description: "Solo se permiten URLs de Cloudinary o de tu Supabase Storage.",
+            });
+            setUploading(false);
+            return;
+        }
 
         try {
             let finalImageUrl = imageUrlInput;
