@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 
 export default function Portfolio() {
@@ -90,7 +91,11 @@ export default function Portfolio() {
 
             <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
                 {projects.map((project) => (
-                    <div key={project.id} className="group cursor-pointer">
+                    <Link
+                        key={project.id}
+                        href={`/catalogo?pub=${project.id}`}
+                        className="group cursor-pointer"
+                    >
                         <div className="aspect-[3/4] overflow-hidden bg-gray-100 mb-6 shadow-sm group-hover:shadow-xl transition-all duration-500">
                             <img src={project.publication_images?.[0]?.url || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
                                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -98,7 +103,7 @@ export default function Portfolio() {
                         </div>
                         <h4 className="text-xl font-rethink font-bold tracking-tight">{project.title}</h4>
                         <p className="text-xs font-black uppercase tracking-widest text-gray-400 mt-1">{project.category}</p>
-                    </div>
+                    </Link>
                 ))}
             </div>
 

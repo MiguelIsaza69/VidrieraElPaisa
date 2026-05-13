@@ -18,6 +18,7 @@ const serviceIcons: Record<string, any> = {
 function CatalogContent() {
     const searchParams = useSearchParams();
     const initialServiceName = searchParams.get("servicio");
+    const initialPubId = searchParams.get("pub");
 
     const [publications, setPublications] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
@@ -27,6 +28,7 @@ function CatalogContent() {
     const [showReloadButton, setShowReloadButton] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(12);
     const [selectedPub, setSelectedPub] = useState<any>(null);
+    const [autoOpened, setAutoOpened] = useState(false);
 
     const supabase = createClient();
 
@@ -102,6 +104,16 @@ function CatalogContent() {
         }
         return () => clearTimeout(timer);
     }, [loading]);
+
+    // 3b. Si llegamos con ?pub=<id> en la URL, abrir ese modal cuando carguen las publicaciones
+    useEffect(() => {
+        if (!initialPubId || autoOpened || publications.length === 0) return;
+        const match = publications.find((p) => String(p.id) === String(initialPubId));
+        if (match) {
+            setSelectedPub(match);
+            setAutoOpened(true);
+        }
+    }, [initialPubId, publications, autoOpened]);
 
     // 4. Modal: cerrar con Escape y bloquear scroll del body mientras está abierto
     useEffect(() => {
