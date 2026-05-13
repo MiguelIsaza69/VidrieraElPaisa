@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { sileo } from "sileo";
+import { toast } from "sonner";
 import { Star } from "lucide-react";
 
 export default function Testimonials() {
@@ -72,7 +72,7 @@ export default function Testimonials() {
 
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-            sileo.error({ description: "Debes iniciar sesión para dejar una opinión" });
+            toast.error("Debes iniciar sesión para dejar una opinión");
             setLoading(false);
             return;
         }
@@ -84,7 +84,7 @@ export default function Testimonials() {
             .eq("user_id", user.id);
 
         if (count !== null && count >= 50) {
-            sileo.error({ description: "Límite alcanzado para testimonios." });
+            toast.error("Límite alcanzado para testimonios.");
             setLoading(false);
             return;
         }
@@ -94,9 +94,9 @@ export default function Testimonials() {
         ]);
 
         if (error) {
-            sileo.error({ description: "Error al enviar opinión" });
+            toast.error("Error al enviar opinión");
         } else {
-            sileo.success({ description: "¡Gracias por tu opinión!" });
+            toast.success("¡Gracias por tu opinión!");
             setContent("");
             // Al cambiar el estado de la página a 0, el useEffect de carga se activará solo
             setPage(0);

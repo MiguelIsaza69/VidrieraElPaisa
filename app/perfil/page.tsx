@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { sileo } from "sileo";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -51,9 +51,9 @@ export default function PerfilPage() {
             });
 
         if (error) {
-            sileo.error({ description: "Error al actualizar perfil" });
+            toast.error("Error al actualizar perfil");
         } else {
-            sileo.success({ description: "Perfil actualizado" });
+            toast.success("Perfil actualizado");
         }
         setLoading(false);
     };

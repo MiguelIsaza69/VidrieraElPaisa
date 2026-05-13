@@ -64,21 +64,6 @@ body {
   }
 }
 
-/* sileo notification overrides */
-[data-sileo-toast],
-.sileo-toast {
-  background: #f1f5f9 !important;
-  border: 1px solid #cbd5e1 !important;
-  border-radius: 0px !important;
-  font-family: var(--font-geist) !important;
-  color: #0f172a !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-}
-
-[data-sileo-toast] [data-description] {
-  color: #64748b !important;
-}
-
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

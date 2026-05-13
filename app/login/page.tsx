@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { sileo } from "sileo";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Check, ChevronRight } from "lucide-react";
@@ -61,10 +61,10 @@ export default function LoginPage() {
         });
 
         if (error) {
-            sileo.error({ description: error.message });
+            toast.error(error.message);
             setLoading(false);
         } else {
-            sileo.success({ description: "¡Bienvenido de nuevo!" });
+            toast.success("¡Bienvenido de nuevo!");
             router.push("/");
             router.refresh();
         }
@@ -73,11 +73,11 @@ export default function LoginPage() {
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!acceptedTerms) {
-            sileo.error({ description: "Debes aceptar los términos y condiciones." });
+            toast.error("Debes aceptar los términos y condiciones.");
             return;
         }
         if (password !== confirmPassword) {
-            sileo.error({ description: "Las contraseñas no coinciden." });
+            toast.error("Las contraseñas no coinciden.");
             return;
         }
 
@@ -94,9 +94,9 @@ export default function LoginPage() {
         });
 
         if (error) {
-            sileo.error({ description: error.message });
+            toast.error(error.message);
         } else {
-            sileo.success({ description: "Registro exitoso. Revisa tu correo para confirmar." });
+            toast.success("Registro exitoso. Revisa tu correo para confirmar.");
             setMode("LOGIN");
         }
         setLoading(false);
@@ -110,9 +110,9 @@ export default function LoginPage() {
         });
 
         if (error) {
-            sileo.error({ description: error.message });
+            toast.error(error.message);
         } else {
-            sileo.success({ description: "Se ha enviado un correo para restablecer tu contraseña." });
+            toast.success("Se ha enviado un correo para restablecer tu contraseña.");
             setMode("LOGIN");
         }
         setLoading(false);

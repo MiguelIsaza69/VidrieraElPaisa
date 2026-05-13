@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     },
 };
 
-import { Toaster } from "sileo";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
     children,
@@ -33,7 +33,19 @@ export default function RootLayout({
             <body
                 className={`${rethink.variable} ${geist.variable} font-sans antialiased text-paisa-black selection:bg-paisa-black selection:text-white`}
             >
-                <Toaster />
+                <Toaster
+                    position="top-right"
+                    toastOptions={{
+                        style: {
+                            background: "#f1f5f9",
+                            border: "1px solid #cbd5e1",
+                            borderRadius: "0px",
+                            fontFamily: "var(--font-geist)",
+                            color: "#0f172a",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+                        },
+                    }}
+                />
                 {children}
             </body>
         </html>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { sileo } from "sileo";
+import { toast } from "sonner";
 import { Plus, Trash2, Edit3, Image as ImageIcon, LayoutDashboard, Send, Star, Search, RefreshCw } from "lucide-react";
 import ReloadButton from "@/components/ReloadButton";
 
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
             console.log("Datos cargados con éxito.");
         } catch (err: any) {
             console.error("Error cargando datos en Admin:", err);
-            sileo.error({ description: `No se pudieron cargar los datos: ${err.message}` });
+            toast.error(`No se pudieron cargar los datos: ${err.message}`);
         } finally {
             setLoading(false);
         }
@@ -155,9 +155,7 @@ export default function AdminDashboard() {
         console.log("--- Iniciando proceso de guardado ---");
 
         if (imageUrlInput && !isAllowedImageUrl(imageUrlInput)) {
-            sileo.error({
-                description: "Solo se permiten URLs de Cloudinary o de tu Supabase Storage.",
-            });
+            toast.error("Solo se permiten URLs de Cloudinary o de tu Supabase Storage.");
             setUploading(false);
             return;
         }
@@ -170,9 +168,7 @@ export default function AdminDashboard() {
                 console.log("Intentando subir archivo porque no hay URL manual...");
                 const uploadedUrl = await handleUploadImage();
                 if (uploadedUrl === null) {
-                    sileo.error({
-                        description: "La subida falló. Intenta pegar la URL de la imagen directamente."
-                    });
+                    toast.error("La subida falló. Intenta pegar la URL de la imagen directamente.");
                     setUploading(false);
                     return;
                 }
@@ -183,7 +179,7 @@ export default function AdminDashboard() {
             }
 
             if (!finalImageUrl && !editingItem) {
-                sileo.error({ description: "Debes subir una imagen o proporcionar una URL" });
+                toast.error("Debes subir una imagen o proporcionar una URL");
                 setUploading(false);
                 return;
             }
@@ -219,14 +215,14 @@ export default function AdminDashboard() {
 
                 if (error) throw error;
 
-                sileo.success({ description: "Publicación guardada correctamente" });
+                toast.success("Publicación guardada correctamente");
                 setShowModal(false);
                 resetForm();
                 fetchData();
             } else if (activeTab === "hero") {
                 console.log("Enviando datos a tabla 'hero_slides'...");
                 if (heroSlides.length >= 6 && !editingItem) {
-                    sileo.error({ description: "Máximo 6 slides permitidos" });
+                    toast.error("Máximo 6 slides permitidos");
                     setUploading(false);
                     return;
                 }
@@ -244,14 +240,14 @@ export default function AdminDashboard() {
 
                 if (error) throw error;
 
-                sileo.success({ description: "Slide guardado correctamente" });
+                toast.success("Slide guardado correctamente");
                 setShowModal(false);
                 resetForm();
                 fetchData();
             }
         } catch (error: any) {
             console.error("ERROR DETECTADO:", error);
-            sileo.error({ description: `Error: ${error.message || 'No se pudo conectar con la base de datos'}` });
+            toast.error(`Error: ${error.message || 'No se pudo conectar con la base de datos'}`);
         } finally {
             setUploading(false);
             console.log("--- Fin del proceso ---");
@@ -267,9 +263,9 @@ export default function AdminDashboard() {
         const { error } = await supabase.from(table).delete().eq("id", id);
 
         if (error) {
-            sileo.error({ description: "Error al eliminar" });
+            toast.error("Error al eliminar");
         } else {
-            sileo.success({ description: "Eliminado con éxito" });
+            toast.success("Eliminado con éxito");
             fetchData();
         }
     };
