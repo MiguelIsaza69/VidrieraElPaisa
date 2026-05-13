@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Grid, FileText, Eye, Building2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Grid, FileText, Eye, Building2, ChevronLeft, ChevronRight, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -26,6 +26,7 @@ function CatalogContent() {
     const [currentPage, setCurrentPage] = useState(1);
     const [showReloadButton, setShowReloadButton] = useState(false);
     const [itemsPerPage, setItemsPerPage] = useState(12);
+    const [selectedPub, setSelectedPub] = useState<any>(null);
 
     const supabase = createClient();
 
@@ -102,6 +103,21 @@ function CatalogContent() {
         return () => clearTimeout(timer);
     }, [loading]);
 
+    // 4. Modal: cerrar con Escape y bloquear scroll del body mientras está abierto
+    useEffect(() => {
+        if (!selectedPub) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setSelectedPub(null);
+        };
+        document.addEventListener("keydown", onKey);
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.removeEventListener("keydown", onKey);
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [selectedPub]);
+
     const getSelectedCategoryName = () => {
         if (!selectedCategoryId) return "Todos nuestros productos";
         return categories.find(c => c.id === selectedCategoryId)?.name || "Catálogo";
@@ -171,12 +187,16 @@ function CatalogContent() {
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                                 {displayedPublications.map((pub) => (
-                                    <div key={pub.id} className="group flex flex-col">
+                                    <div
+                                        key={pub.id}
+                                        onClick={() => setSelectedPub(pub)}
+                                        className="group flex flex-col cursor-pointer"
+                                    >
                                         <div className="aspect-[4/5] bg-gray-50 mb-8 overflow-hidden relative">
                                             <img
                                                 src={pub.publication_images?.[0]?.url || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c"}
                                                 alt={pub.title}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                             />
                                             <div className="absolute top-6 left-6 flex flex-col gap-2">
                                                 <span className="bg-white/90 backdrop-blur-md text-black px-4 py-1.5 text-[8px] font-black uppercase tracking-widest shadow-sm">
@@ -197,6 +217,7 @@ function CatalogContent() {
                                             )}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
                                             className="mt-auto inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:translate-x-2 transition-transform"
                                         >
                                             Consultar disponibilidad &rarr;
@@ -255,6 +276,76 @@ function CatalogContent() {
             </main>
 
             <Footer />
+
+            {/* Modal de detalle de publicación */}
+            {selectedPub && (
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={selectedPub.title}
+                    className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex items-stretch md:items-center justify-center md:p-6 animate-fade-in"
+                    onClick={() => setSelectedPub(null)}
+                >
+                    <div
+                        className="relative bg-white w-full md:max-w-6xl md:h-[92vh] grid grid-cols-1 md:grid-cols-5 shadow-2xl animate-reveal-up overflow-y-auto md:overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            onClick={() => setSelectedPub(null)}
+                            aria-label="Cerrar"
+                            className="absolute top-4 right-4 z-20 w-11 h-11 bg-white text-black hover:bg-black hover:text-white border border-gray-200 transition-all flex items-center justify-center shadow-lg"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        {/* Imagen */}
+                        <div className="md:col-span-3 md:relative md:bg-gray-50 md:h-full md:overflow-hidden md:flex md:items-center md:justify-center">
+                            <img
+                                src={selectedPub.publication_images?.[0]?.url || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c"}
+                                alt={selectedPub.title}
+                                className="block mx-auto max-w-full max-h-[50vh] md:absolute md:inset-0 md:max-w-none md:max-h-none md:w-full md:h-full md:object-contain"
+                            />
+                        </div>
+
+                        {/* Info */}
+                        <div className="p-8 md:p-12 md:col-span-2 flex flex-col md:overflow-y-auto">
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                <span className="bg-black text-white px-4 py-2 text-[9px] font-black uppercase tracking-[0.25em]">
+                                    {selectedPub.service_categories?.name}
+                                </span>
+                                <span className="bg-gray-100 text-black px-4 py-2 text-[9px] font-black uppercase tracking-[0.25em]">
+                                    {selectedPub.category}
+                                </span>
+                            </div>
+
+                            <h2 className="text-3xl md:text-5xl font-rethink font-bold tracking-tighter text-black mb-8 leading-tight">
+                                {selectedPub.title}
+                            </h2>
+
+                            <div className="border-t border-gray-100 pt-8 mb-10">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 block mb-4">
+                                    Descripción
+                                </span>
+                                <p className="text-gray-600 font-medium text-base leading-relaxed whitespace-pre-line">
+                                    {selectedPub.description}
+                                </p>
+                            </div>
+
+                            <a
+                                href={`https://wa.me/573013700487?text=${encodeURIComponent(
+                                    `Hola, Vidriera El Paisa. \nMe gustaria recibir mas informacion y asesoria sobre este producto del Catalogo Profesional:\n\nPRODUCTO: *${selectedPub.title}*\nCATEGORIA: *${selectedPub.service_categories?.name}*\n\n¿Podrian darme detalles de disponibilidad? Muchas gracias.`
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-auto bg-black text-white text-center py-5 md:py-6 text-xs font-black uppercase tracking-[0.3em] hover:bg-neutral-800 transition-all shadow-xl flex items-center justify-center gap-3 group/cta"
+                            >
+                                Consultar por WhatsApp
+                                <ArrowRight className="w-4 h-4 group-hover/cta:translate-x-1 transition-transform" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
